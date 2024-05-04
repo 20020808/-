@@ -1,0 +1,21 @@
+{
+  "hash": "c8f4b3b2",
+  "configHash": "00051df4",
+  "lockfileHash": "4bf49f19",
+  "browserHash": "2d9324cc",
+  "optimized": {
+    "pinia-plugin-persistedstate": {
+      "src": "../../../../../node_modules/pinia-plugin-persistedstate/dist/index.mjs",
+      "file": "pinia-plugin-persistedstate.js",
+      "fileHash": "fbeeaa6f",
+      "needsInterop": false
+    },
+    "luch-request": {
+      "src": "../../../../../node_modules/luch-request/src/lib/luch-request.js",
+      "file": "luch-request.js",
+      "fileHash": "6b72acd7",
+      "needsInterop": false
+    }
+  },
+  "chunks": {}
+}

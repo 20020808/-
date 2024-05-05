@@ -14,19 +14,9 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				title: 'Hello'
-			}
-		},
-		onLoad() {
-
-		},
-		methods: {
-
-		}
-	}
+	import {http} from '@/utils/http.js'
+	
+	http.request('/patient/home/knowledge')
 </script>
 
 <style>

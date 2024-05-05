@@ -1,4 +1,5 @@
 import Request from 'luch-request'
+import {useUserStore} from '@/stores/user.js'
 
 const http = new Request({
 	baseURL: 'https://consult-api.itheima.net',
@@ -10,36 +11,34 @@ const http = new Request({
 // 接口白名单
 const whiteList = ['/code', '/login', '/login/password']
 
-//请求拦截器
-http.interceptors.request.use((config) => {
- // config 即为请求时的参数，包含了请求头等
+// 请求拦截器
+http.interceptors.request.use(
+  function (config) {
+    // 显示加载状态提示
+    if (config.custom.loading) {
+      uni.showLoading({ title: '正在加载...', mask: true })
+    }
 
-  if (config.custom.loading) {
-    // 显示加载提示
-    uni.showLoading({
-      title: '正在加载...',
-      mask: true,
-    })
+    // 用户相关的数据
+    const userStore = useUserStore()
+
+    // 全局默认的头信息（方便以后扩展）
+    const defaultHeader = {}
+    // 判断是否存在 token 并且不在接口白单当中	
+    if (userStore.token && !whiteList.includes(config.url)) {
+      defaultHeader.Authorization = 'Bearer ' + userStore.token
+    }
+		// 合并全局头信息和局部头信息（局部优先级高全局）
+    config.header = {
+      ...defaultHeader,
+      ...config.header,
+    }
+    return config
+  },
+  function (error) {
+    return Promise.reject(error)
   }
-
-  // 获取 token
-  // const userStore = useUserStore()
-
-  // 默认的请求头
-  const defaultHeader = {}
-  // 判断是否存在 token 并且不在接口白单当中
-  // if (userStore.token && !whiteList.includes(config.url)) {
-  //   defaultHeader.Authorization = 'Bearer ' + userStore.token
-  // }
-
-  // 让局的头信息覆盖掉全局的头信息
-  config.header = {
-    ...defaultHeader,
-    ...config.header,
-  }
-
-  return config
-})
+)
 
 //响应拦截器
 http.interceptors.response.use(

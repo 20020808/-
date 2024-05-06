@@ -1,7 +1,5 @@
 <template>
-	<view>
-		
-	</view>
+	<scroll-page></scroll-page>
 </template>
 
 <script>

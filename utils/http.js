@@ -60,4 +60,33 @@ http.interceptors.response.use(
 	  }
 )
 
+// tabBar页面路径
+const tabBarList = [
+  'pages/index/index',
+  'pages/wiki/index',
+  'pages/notify/index',
+  'pages/my/index',
+]
+
+//引导用户重新登录
+function reLogin(){
+	
+	const pageStack = getCurrentPages()
+	const currentPage = pageStack[pageStack.length - 1]
+	
+	const redirectURL = currentPage.$page.fullPath
+	
+	const openType = tabBarList.includes(currentPage.route) ? 'switchTab' : 'redirectTo'
+	
+	const userStore = useUserStore()
+	
+	userStore.redirectURL = redirectURL
+	
+	useUserStore.openType = openType
+	
+	uni.redirectTo({
+		url: '/pages/login/index'
+	})
+}
+
 export { http }

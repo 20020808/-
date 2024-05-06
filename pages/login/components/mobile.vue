@@ -78,6 +78,11 @@ import {useUserStore} from '@/stores/user.js'
 			}
 			//持久化存储token
 			userStore.token = data.token
+			
+			//跳转到登录前的页面
+			uni[userStore.openType]({
+				url: userStore.recirectURL
+			})
 		}catch(e){
 			//TODO handle the exception
 			console.log(e);

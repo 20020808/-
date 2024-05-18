@@ -1,7 +1,7 @@
 <template>
 	<scroll-view 
 		scroll-y="true" 
-		:refresher-enabled = "scrollPageProps.refresherEnabled",
+		:refresher-enabled = "scrollPageProps.refresherEnabled"
 		:refresher-triggered = "scrollPageProps.refresherTriggered"
 		@refresherrefresh="$emit('refresherrefresh',$event)"
 		@scrolltolower="$emit('scrolltolower',$event)"
@@ -21,10 +21,10 @@
 	const {windowHeight} = uni.getSystemInfoSync()
 	
 	//自定义组件属性
-	const scrollPageProps = defineProps({
+	  const scrollPageProps = defineProps({
 		borderStyle: {
-			type: [String,Boolean],
-			default: false,
+		  type: [String, Boolean],
+		  default: false,
 		},
 		refresherEnabled: {
 		  type: Boolean,
@@ -34,15 +34,19 @@
 		  type: Boolean,
 		  default: false,
 		},
-	})
+	  })
 	
 	//自定义事件
 	defineEmits(['refresherrefresh','scrolltolower'])
+	
+	function test(){
+		console.log('下拉触发');
+	}
 </script>
 
 <style lang="scss">
   .scroll-page-content {
-	height: 1000px;
+	  height: 1000px;
     padding-bottom: env(safe-area-inset-bottom);
   }
 </style>

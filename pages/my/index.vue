@@ -1,5 +1,10 @@
 <template>
-	<scroll-page></scroll-page>
+	<scroll-page 
+	borderStyle = "1px solid blue"
+	:refresherEnabled = "true",
+	>
+		
+	</scroll-page>
 </template>
 
 <script>

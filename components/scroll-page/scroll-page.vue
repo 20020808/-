@@ -9,6 +9,7 @@
 			height:windowHeight + 'px',
 			boxSizing: 'border-box',
 			borderBottom: scrollPageProps.borderStyle,
+			backgroundColor: scrollPageProps.backgroundColor
 			}">
 		<view class="scroll-page-content">
 		  <slot></slot>
@@ -34,6 +35,10 @@
 		  type: Boolean,
 		  default: false,
 		},
+		backgroundColor: {
+			type:String,
+			default: '#fff'
+		}
 	  })
 	
 	//自定义事件

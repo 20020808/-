@@ -16,3 +16,10 @@ export const loginByMobileApi = (data) => {
 export const loginByPassword = (data) => {
   return http.post('/login/password', data)
 }
+
+/* 
+	获取用户信息
+ */
+export const userInfoApi = () => {
+	return http.get('/patient/myUser')
+}

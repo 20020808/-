@@ -1,5 +1,24 @@
 <!-- pages/my/index.vue -->
-<script setup></script>
+<script setup>
+	import { ref } from 'vue';
+	import { userInfoApi } from '@/services/user';
+	
+	//用户信息
+	const userInfo = ref()
+	
+	//获取用户信息
+	async function getUserInfo(){
+		//调用接口获取用户信息
+		const {code,message,data} = await userInfoApi()
+		//检测接口是否调用成功
+		if(code != 10000) return uni.utils.toast(message)
+		//渲染用户数据
+		userInfo.value = data
+	}
+	
+	//获取个人信息
+	getUserInfo()
+</script>
 <template>
   <scroll-page background-color="#F6F7F9">
     <view class="my-page">
@@ -7,29 +26,29 @@
       <view class="user-profile">
         <image
           class="user-avatar"
-          src="/static/uploads/doctor-avatar.jpg"
+          :src="userInfo.avatar"
         ></image>
         <view class="user-info">
-          <text class="nickname">用户907456</text>
+          <text class="nickname">{{userInfo.account}}</text>
           <text class="iconfont icon-edit"></text>
         </view>
       </view>
       <!-- 用户数据 -->
       <view class="user-data">
         <navigator hover-class="none" url=" ">
-          <text class="data-number">150</text>
+          <text class="data-number">{{ userInfo.collectionNumber }}</text>
           <text class="data-label">收藏</text>
         </navigator>
         <navigator hover-class="none" url=" ">
-          <text class="data-number">23</text>
+          <text class="data-number">{{ userInfo.likeNumber }}</text>
           <text class="data-label">关注</text>
         </navigator>
         <navigator hover-class="none" url=" ">
-          <text class="data-number">230</text>
+          <text class="data-number">{{ userInfo.score }}</text>
           <text class="data-label">积分</text>
         </navigator>
         <navigator hover-class="none" url=" ">
-          <text class="data-number">3</text>
+          <text class="data-number">{{ userInfo.couponNumber }}</text>
           <text class="data-label">优惠券</text>
         </navigator>
       </view>

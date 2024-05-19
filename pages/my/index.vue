@@ -2,9 +2,26 @@
 <script setup>
 	import { ref } from 'vue';
 	import { userInfoApi } from '@/services/user';
+	import { useUserStore } from '@/stores/user';
+	
+	//用户相关的数据
+	const userStore = useUserStore()
 	
 	//用户信息
 	const userInfo = ref()
+	
+	//退出登录
+	function onLogoutClick(){
+		//清除登录状态
+		userStore.token = ''
+		//重置Pinia的数据
+		userStore.openType = 'switchTab'
+		userStore.recirectURL = '/pages/index/index'
+		//跳转到登录页
+		uni.reLaunch({
+			url:'/pages/login/index'
+		})
+	}
 	
 	//获取用户信息
 	async function getUserInfo(){
@@ -226,7 +243,7 @@
         </uni-list>
       </custom-section>
       <!-- 退出登录 -->
-      <view class="logout-button">退出登录</view>
+      <view @click="onLogoutClick" class="logout-button">退出登录</view>
     </view>
   </scroll-page>
 </template>

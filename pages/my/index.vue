@@ -194,7 +194,7 @@
             :border="false"
             title="家庭档案"
             show-arrow
-			to = "/subpkg_archive/form/index"
+			to = "/subpkg_archive/list/index"
             show-extra-icon
             :extra-icon="{
               customPrefix: 'icon-symbol',

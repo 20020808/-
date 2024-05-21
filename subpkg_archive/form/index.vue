@@ -1,9 +1,12 @@
 <!-- subpkg_archive/form/index.vue -->
 <script setup>
   import { ref } from 'vue'
-  import { addPatientApi } from '@/services/patinet';
+  import { addPatientApi, patientDetailApi, updatePatientApi } from '@/services/patinet';
   
 	const formRef = ref()
+	
+	//使用defineProps接地址参数
+	const props = defineProps({id:String})
   
     // 表单数据
     const formData = ref({
@@ -63,7 +66,7 @@
 		try{
 			await formRef.value.validate()
 			
-			addPatient()
+			props.id ? updatePatient() :addPatient()
 		}catch(e){
 			//TODO handle the exception
 			console.log(e);
@@ -80,6 +83,37 @@
 		//跳转到患者列表页面
 		uni.navigateBack()
 	}
+	
+	//获取患者详情信息
+	async function getPatientDetail(){
+		//是否存在患者ID 
+		if(!props.id) return 
+		//有id说明当前处于编辑状态，修改页面标题
+		uni.setNavigationBarTitle(
+			{title:'编辑患者'}
+		)
+		
+		//患者详情接口
+		const {
+			code,
+			data:{genderValue,age,...rest}
+		} = await patientDetailApi(props.id)
+		
+		//渲染患者信息
+		formData.value = rest 
+	}
+	
+	//编辑（更新）患者信息
+	async function updatePatient(){
+		//更新患者信息接口
+		const {code,message} = await updatePatientApi(formData.value)
+		//检测接口是否调用成功
+		if(code !== 10000) return uni.utils.toast(message)
+		//跳转到患者页面
+		uni.navigateBack()
+	}
+	
+	getPatientDetail()
 </script>
 
 <template>

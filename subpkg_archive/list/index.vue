@@ -1,7 +1,7 @@
 <!-- subpkg_archive/list/index.vue -->
 <script setup>
 	import { ref } from 'vue'
-	import { patientListApi } from '@/services/patinet';
+	import { patientListApi, removePattientApi } from '@/services/patinet';
 	import { onShow } from '@dcloudio/uni-app'
   
   //患者列表
@@ -30,6 +30,16 @@
 	  //展示页面内容
 	  pageShow.value = true
   }
+  
+  //滑动操作点击
+  function onSwipeActionClick(id,index){
+	  //调用删除患者接口
+	  const {code,message } = removePattientApi(id)
+	  //检测接口是否调用成功
+	  if(code !== 10000) return uni.utils.toast(message)
+	  //Vue实例中的数据也要同步删除
+	  patinetList.value.splice(index,1)
+  }
 
 	// 生命周期（页面显示）
 	onShow(() => {
@@ -48,6 +58,7 @@
 			:right-options="swipeOptions"
 			v-for = "(patient,index) in patinetList"
 			:key = "patient.id"
+			@click = "onSwipeActionClick(patient.id,index)"
 			>
           <view class="archive-card" :class = "{active: patient.defaultFlag === 1}">
             <view class="archive-info">
@@ -62,7 +73,7 @@
             <navigator
               hover-class="none"
               class="edit-link"
-              url="/subpkg_archive/form/index"
+              :url="`/subpkg_archive/form/index?id=${patient.id}`"
             >
               <uni-icons
                 type="icon-edit"

@@ -3,7 +3,8 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "优医咨询"
+				"navigationBarTitleText": "优医咨询",
+				"navigationStyle": "custom"
 			}
 		},
 		{

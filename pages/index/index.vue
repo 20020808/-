@@ -1,48 +1,225 @@
-<template>
-	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view class="text-area">
-			<text class="title">{{title}}</text>
-			<text class="iconfont icon-location"></text>
-			<uni-icons type="cart-filled" size="30"></uni-icons>
-			<uni-icons custom-prefix="iconfont" color = "red" type="icon-location" size="30"></uni-icons>
-			<text class = "icon-symbol icon-symbol-tool-03"></text>
-			
-			<uni-icons custom-prefix="icon-symbol" type="icon-symbol-tool-03"></uni-icons>
-		</view>
-	</view>
-</template>
+<script setup>
+  import { ref,computed } from 'vue'
+  import feedList from './components/feed-list.vue'
+  import { feedListApi } from '@/services/doctor';
+  // 获取安全区域数据
+  const { safeAreaInsets } = uni.getSystemInfoSync()
 
-<script>
-	import {http} from '@/utils/http.js'
+  // 标签页索引值
+  const tabIndex = ref(0)
+
+	// 标签页数据
+  const feedTabs = ref([
+    {
+      label: '推荐',
+      type: 'recommend',
+      current: 1,
+      hasMore: true,
+      list: [],
+      rendered: true,
+    },
+    {
+      label: '关注',
+      type: 'like',
+      current: 1,
+      hasMore: true,
+      list: [],
+      rendered: false,
+    },
+    {
+      label: '减脂',
+      type: 'fatReduction',
+      current: 1,
+      hasMore: true,
+      list: [],
+      rendered: false,
+    },
+    {
+      label: '饮食',
+      type: 'food',
+      current: 1,
+      hasMore: true,
+      list: [],
+      rendered: false,
+    },
+  ])
+  
+  //标签页的类型
+  const feedType = computed(() => feedTabs.value[tabIndex.value].type)
+  
+  //标签页的页码
+  const feedCurrent = computed(() => feedTabs.value[tabIndex.value].current)
+  
+  //每次请求多少条
+  const feedPageSize = ref(5)
+
+  // 切换标签页
+  function onFeedTabChange({ index }) {
+    tabIndex.value = index
 	
-	http.request('/patient/home/knowledge')
+	//对请求进行判断 如果已经请求过了 不用再请求
+	if(!feedTabs.value[index].rendered) getFeedList()
+	
+    // 每个标签页只被初始一次
+    feedTabs.value[index].rendered = true
+  }
+  
+  //获取知识列表
+  async function getFeedList(){
+	  //调用接口获取知识列表
+	  const { code,data,message } = await feedListApi({
+		  type: feedType.value,
+		  current: feedCurrent.value,
+		  pageSize: feedPageSize.value
+	  })
+	  //
+  }
+
 </script>
 
-<style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
+<template>
+  <scroll-page>
+    <view
+      class="index-page"
+      :style="{ backgroundPositionY: -48 + safeAreaInsets.top + 'px' }"
+    >
+      <!-- 页面导航 -->
+      <view
+        :style="{ paddingTop: safeAreaInsets.top + 'px' }"
+        class="page-navbar"
+      >
+        优医
+      </view>
 
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
-	}
+      <!-- 搜索栏 -->
+      <view class="search-bar">
+        <input
+          placeholder-class="input-placeholder"
+          placeholder="搜一搜: 疾病/症状/医生/健康知识"
+          class="input"
+          type="text"
+        />
+        <view class="icon-search">
+          <uni-icons size="22" color="#C3C3C5" type="search" />
+        </view>
+      </view>
+      <!-- 快速入口 -->
+      <view class="quick-entry">
+        <navigator hover-class="none" class="quick-entry-item">
+          <image
+            class="quick-entry-icon"
+            src="/static/images/quick-entry-1.png"
+          />
+          <text class="label">问医生</text>
+          <text class="small">按科室查问医生</text>
+        </navigator>
+        <navigator
+          hover-class="none"
+          class="quick-entry-item"
+          url="/subpkg_consult/quickly/index"
+        >
+          <image
+            class="quick-entry-icon"
+            src="/static/images/quick-entry-2.png"
+          />
+          <text class="label">极速问诊</text>
+          <text class="small">20s医生极速回复</text>
+        </navigator>
+        <navigator hover-class="none" class="quick-entry-item">
+          <image
+            class="quick-entry-icon"
+            src="/static/images/quick-entry-3.png"
+          />
+          <text class="label">开药门诊</text>
+          <text class="small">线上买药更方便</text>
+        </navigator>
+      </view>
+      <!-- 快速查看 -->
+      <view class="quick-view">
+        <navigator
+          hover-class="none"
+          class="quick-view-item"
+          url="/subpkg_medicine/order_list/index"
+        >
+          <image
+            class="quick-view-icon"
+            src="/static/images/quick-view-1.png"
+          />
+          <text class="label">药品订单</text>
+        </navigator>
+        <navigator
+          hover-class="none"
+          class="quick-view-item"
+          url="/subpkg_archive/list/index"
+        >
+          <image
+            class="quick-view-icon"
+            src="/static/images/quick-view-2.png"
+          />
+          <text class="label">健康档案</text>
+        </navigator>
+        <navigator hover-class="none" class="quick-view-item">
+          <image
+            class="quick-view-icon"
+            src="/static/images/quick-view-3.png"
+          />
+          <text class="label">我的处方</text>
+        </navigator>
+        <navigator hover-class="none" class="quick-view-item">
+          <image
+            class="quick-view-icon"
+            src="/static/images/quick-view-4.png"
+          />
+          <text class="label">疾病查询</text>
+        </navigator>
+      </view>
+      <!-- 广告位 -->
+      <view class="banner-placeholder">
+        <swiper
+          class="uni-swiper"
+          indicator-dots
+          indicator-color="#ffffff99"
+          indicator-active-color="#fff"
+          circular
+        >
+          <swiper-item>
+            <navigator hover-class="none" class="navigator" url=" ">
+              <image class="banner-image" src="/static/images/banner-1.png" />
+            </navigator>
+          </swiper-item>
+          <swiper-item>
+            <navigator hover-class="none" class="navigator" url=" ">
+              <image
+                class="banner-image"
+                src="/static/images/banner-1.png"
+                mode="aspectFill"
+              />
+            </navigator>
+          </swiper-item>
+        </swiper>
+      </view>
+      <view
+        class="doctor-feeds"
+        :style="{ marginTop: -safeAreaInsets.top + 'px' }"
+      >
+        <custom-sticky :offset-top="safeAreaInsets.top + 'px'">
+          <custom-tabs @click="onFeedTabChange" :list="feedTabs" />
+        </custom-sticky>
+		
+		<view
+			v-for = "(feed,index) in feedTabs"
+			:key = "feed.type"
+			v-show = "tabIndex == index"
+		>
+			<feed-list :list = "feed.list" v-if = "feed.rendered"></feed-list>
+		</view>
+		
+		
+      </view>
+    </view>
+  </scroll-page>
+</template>
 
-	.text-area {
-		display: flex;
-		justify-content: center;
-	}
-
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
-	}
+<style lang="scss">
+  @import './index.scss';
 </style>

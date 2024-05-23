@@ -72,13 +72,34 @@
 		  current: feedCurrent.value,
 		  pageSize: feedPageSize.value
 	  })
-	  //
+	  //列表中原来的数据
+	  const list = feedTabs.value[tabIndex.value].list 
+	  //追加方式渲染新请求来的数据
+	  feedTabs.value[tabIndex.value].list = [...list,...data.rows]
+	  //过滤掉html标签
+	  data.rows.forEach((row) => {
+		  row.content = row.content.replace(/<[^>]+>/g, '')
+	  })
+	  
+	  //列表数据的页码
+	  const current = feedTabs.value[tabIndex.value].current
+	  //更新标签码
+	  feedTabs.value[tabIndex.value].current = current + 1
+	  //判断是否有更多数据
+	  feedTabs.value[tabIndex.value].hasMore = current + 1 <= data.pageTotal
+  }
+  
+  //滚动加载更多数据
+  function onScrollToLower(){
+	  //hasMore为true时才去请求
+	  if(feedTabs.value[tabIndex.value].hasMore) getFeedList()
   }
 
+	getFeedList()
 </script>
 
 <template>
-  <scroll-page>
+  <scroll-page @scrolltolower = "onScrollToLower">
     <view
       class="index-page"
       :style="{ backgroundPositionY: -48 + safeAreaInsets.top + 'px' }"
@@ -213,8 +234,6 @@
 		>
 			<feed-list :list = "feed.list" v-if = "feed.rendered"></feed-list>
 		</view>
-		
-		
       </view>
     </view>
   </scroll-page>

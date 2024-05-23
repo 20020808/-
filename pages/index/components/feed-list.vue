@@ -14,36 +14,31 @@
 
 <template>
   <view class="feed-list">
-    <view class="feed-list-item">
+    <view v-for="item in list" :key="item.id" class="feed-list-item">
       <view class="feed-meta">
-        <image class="doctor-avatar" src="/static/uploads/doctor-avatar.jpg" />
+        <image class="doctor-avatar" :src="item.creatorAvatar" />
         <view class="doctor-info">
-          <text class="name">王医生</text>
-          <text class="desc">积水潭 皮肤科 主任医师</text>
+          <text class="name">{{ item.creatorName }}</text>
+          <text class="desc">
+			{{ item.creatorHospatalName }}
+			{{ item.creatorDep }}
+			{{ item.creatorTitles }}
+		  </text>
         </view>
         <button class="doctor-button" plain>+ 关注</button>
       </view>
-      <view class="feed-topic">炎热夏季如何防晒？</view>
-      <view class="feed-relation"># 儿童健康</view>
+      <view class="feed-topic">{{ item.title }}</view>
+      <view class="feed-relation"># {{ item.topic }}</view>
       <view class="feed-content">
         <view class="text">
-          炎热的夏季，那大太阳无时不刻在考验着我们的肌肤，过强、过多的阳光中紫外线的
+           {{ item.content }}
         </view>
         <view class="picture">
           <image
+		    v-for="picture in item.coverUrl"
             mode="aspectFill"
             class="uni-image"
-            src="/static/uploads/feed-1.jpeg"
-          />
-          <image
-            mode="aspectFill"
-            class="uni-image"
-            src="/static/uploads/feed-2.jpeg"
-          />
-          <image
-            mode="aspectFill"
-            class="uni-image"
-            src="/static/uploads/feed-3.jpeg"
+            :src="picture"
           />
         </view>
       </view>
@@ -139,6 +134,11 @@
       height: 212rpx;
       border-radius: 20rpx;
     }
+	
+		// 处理文字溢出
+	.text {
+	  @include text-overflow(3);
+	}
   }
 
   .feed-extra {

@@ -1,7 +1,8 @@
 <script setup>
   import { ref,computed } from 'vue'
   import feedList from './components/feed-list.vue'
-  import { feedListApi } from '@/services/doctor';
+  import { feedListApi,doctorListApi } from '@/services/doctor';
+  import doctorList from './components/doctor-list.vue'
   // 获取安全区域数据
   const { safeAreaInsets } = uni.getSystemInfoSync()
 
@@ -52,6 +53,9 @@
   
   //每次请求多少条
   const feedPageSize = ref(5)
+  
+  //医生列表
+  const doctorItems = ref([])
 
   // 切换标签页
   function onFeedTabChange({ index }) {
@@ -94,8 +98,18 @@
 	  //hasMore为true时才去请求
 	  if(feedTabs.value[tabIndex.value].hasMore) getFeedList()
   }
+  
+  //获取医生列表
+  async function getDoctorList(){
+	  const { code,message,data } = await doctorListApi()
+	  console.log('code',code);
+	  if(code != 10000) return uni.utils.toast(message)
+	  doctorItems.value = data.rows   
+  }
 
 	getFeedList()
+	//获取医生列表
+	getDoctorList()
 </script>
 
 <template>
@@ -137,7 +151,7 @@
         <navigator
           hover-class="none"
           class="quick-entry-item"
-          url="/subpkg_consult/quickly/index"
+          url="/subpkg_consult/quickly/index?type=2"
         >
           <image
             class="quick-entry-icon"
@@ -232,6 +246,8 @@
 			:key = "feed.type"
 			v-show = "tabIndex == index"
 		>
+			<doctor-list :list = "doctorItems" v-if = "feed.type == 'recommend'"></doctor-list>
+		
 			<feed-list :list = "feed.list" v-if = "feed.rendered"></feed-list>
 		</view>
       </view>

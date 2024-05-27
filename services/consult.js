@@ -6,3 +6,15 @@ import { http } from '@/utils/http.js'
 export const departmentListApi = () => {
 	return http.get('/dep/all')
 }
+
+/**
+ * 生成预支付订单
+ */
+export const preOrderApi = (type,options = {}) => {
+	return http.get(`/patient/consult/order/pre`,{
+		params:{
+			type,
+			...options
+		}
+	})
+}

@@ -1,7 +1,8 @@
 <!-- subpkg_consult/patient/index.vue -->
 <script setup>
-  import { ref } from 'vue'
+  import { computed, ref } from 'vue'
   import { patientListApi } from '@/services/patinet.js'
+  import { useConsultStore } from '@/stores/consult';
 	
   // 侧滑按钮配置
   const swipeOptions = ref([
@@ -16,11 +17,27 @@
   //卡片的值
   const patientCardIndex = ref(0)
   
+  //患者相关数据
+  const consultStore = useConsultStore()
+  
+  //选择患者id
+  const patientId = computed(() => {
+	  return patientList.value[patientCardIndex.value]?.id
+  })
+  
   //患者列表数据
   const patientList = ref([])
   
   function onPatientCardClick(index){
 	  patientCardIndex.value = index
+  }
+  
+  //下一步
+  function onNextStepClick(){
+	  consultStore.patientId = patientId.value
+	  uni.navigateTo({
+	  	url: '/subpkg_consult/payment/index'
+	  })
   }
   
   //获取患者列表数据
@@ -95,7 +112,7 @@
     </view>
     <!-- 下一步操作 -->
     <view class="next-step">
-      <button class="uni-button">
+      <button class="uni-button" @click = "onNextStepClick">
         下一步
       </button>
     </view>

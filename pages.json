@@ -89,6 +89,12 @@
 		 {
 		      "root": "subpkg_consult",
 		      "pages": [
+			    {
+					"path": "payment/index",
+					"style": {
+					  "navigationBarTitleText": "等待付款"
+					}
+				},
 		        {
 		          "path": "quickly/index",
 		          "style": {

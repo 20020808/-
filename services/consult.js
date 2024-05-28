@@ -18,3 +18,10 @@ export const preOrderApi = (type,options = {}) => {
 		}
 	})
 }
+
+/**
+ * 生成待支付订单
+ */
+export const createOrderApi = (data) => {
+	return http.post(`/patient/consult/order`,data)
+}

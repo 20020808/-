@@ -9,12 +9,19 @@
 		  <button @click="counterStore.increment()" class="button" type="primary">+</button>
 		</view>
 	</view>
+	
+	<button @click = "paymemtRef.openPopup()">测试方法</button>
+	<custom-payment @clone = "testClone" ref = "paymemtRef"></custom-payment>
+	
 </template>
 
 <script setup>
+	import { ref } from 'vue' 
 	import { http } from '@/utils/http.js'
 	import { useCounterStore } from '@/stores/counter.js'
 	const counterStore = useCounterStore()
+	
+	const paymemtRef = ref()
 	
 	function onButtonClick(){
 		http.request({
@@ -29,6 +36,10 @@
 		})
 		
 		uni.utils.toast('提示')
+	}
+	
+	function testClone(){
+		paymemtRef.value.closePopup()
 	}
 </script>
 
